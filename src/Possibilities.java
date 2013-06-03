@@ -2,18 +2,18 @@
 public class Possibilities {
 
 	boolean finished;
-	int gridNumber, row, collum, value;
+	int gridNumber, row, colum, value;
 
 
 
 	public Possibilities(boolean finished, int gridNumber, 
-			int row, int collum, int value){
+			int row, int colum, int value){
 
-		finished = this.finished;
-		gridNumber = this.gridNumber;
-		row = this.row;
-		collum = this.collum;
-		value = this.value;
+		this.finished = finished; 
+		this.gridNumber = gridNumber;
+		this.row = row;
+		this.colum = colum;
+		this.value = value;
 
 	}
 
@@ -50,14 +50,14 @@ public class Possibilities {
 		return row;
 	}
 
-	public void setCollum(int collum){
+	public void setColum(int colum){
 
-		this.collum = collum;
+		this.colum = colum;
 	}
 	
-	public int getCollum(){
+	public int getcolum(){
 		
-		return collum;
+		return colum;
 	}
 	
 	public void setValue(int value){

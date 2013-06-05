@@ -8,6 +8,8 @@ public class Solver {
 	public static void main(String[] args) {	
 
 		initializePoints();
+		while(finishedSolving() != true)
+			determine();
 	}
 
 
@@ -16,8 +18,10 @@ public class Solver {
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-				board[x][y] = new Possibilities(false,0,x+1,y+1,0);	
-				board[x][y].setGridNumber(findGridNumber(x,y));
+				board[x][y] = new Possibilities(false,0,0,x+1,y+1,0);	
+				board[x][y].setGridX(findGridX(x));
+				board[x][y].setGridY(findGridY(y));
+
 			}
 		}
 
@@ -78,35 +82,23 @@ public class Solver {
 
 	}
 
-	public static int findGridNumber(int x, int y){
+	public static int findGridX(int x){
 
-		int gridNumber = 0;
+		int gridX = (x-1)/3;
 
-		if(x<3 && y<3) //top left
-			gridNumber =1;
-		if(x>2 && x<6 && y<3) //top mid
-			gridNumber =2;
-		if(x>5 && y<3)
-			gridNumber =3; //top right
-
-		if(x<3 && y>2 && y<6) //mid left
-			gridNumber =4;
-		if(x>2 && x<6 && y>2 && y<6) //mid mid
-			gridNumber =5;
-		if(x>5 && y>2 && y<6) //mid right
-			gridNumber =6;
-
-		if(x<3 && y>5) //bottom left
-			gridNumber =7;
-		if(x>2 && x<6 && y>5) //bottom mid
-			gridNumber =8;
-		if(x>5 && y>5) //bottom right
-			gridNumber =9;
-
-		return gridNumber;
+		return gridX;
 	}
-	
-	public boolean sameCollumOrRow(int num, int xCord, int yCord){
+
+	public static int findGridY(int y){
+
+		int gridY = (y-1)/3;
+
+		return gridY;
+	}
+
+
+
+	public static boolean sameCollumOrRow(int num, int xCord, int yCord){
 
 		boolean same = false;
 
@@ -117,7 +109,7 @@ public class Solver {
 				break;
 			}
 		}
-		
+
 		if(same == false){
 			for(int y=0; y<9; y++){
 
@@ -127,58 +119,141 @@ public class Solver {
 				}
 			}
 		}
-		
+
 		return same;
-	}
-	
-	//TODO
-	public boolean sameGrid(){
-		
-		boolean same = false;
-		
-		return same;
-		
 	}
 
-	public void placePossibilities(){
-		
+
+	public static boolean sameGrid(int number, int gridX, int gridY){
+
+		boolean same = false;
+
+		for(int y=gridY*3; y<((gridY*3)+3); y++){
+			for(int x=gridX*3; x<((gridX*3)+3); x++){
+
+				if(number == board[x][y].getValue())
+					same = true;
+			}
+		}
+
+		return same;
+	}
+
+	public static void placePossibilities(){
+
 		for(int n=1; n<10; n++){
 			for(int y=0; y<9; y++){
 				for(int x=0; x<9; x++){
 
-					if(board[x][y].getFinished()!= true && 
-						sameCollumOrRow(n,x,y)!=true )
-						//&& sameGrid() == false
-						
+					if(board[x][y].getFinished() == false && 
+							sameCollumOrRow(n,x,y) == false 
+							&& sameGrid(n,x,y) == false)
+
 						numbers[x][y].add(n);
 
-				
+
 
 				}
 			}
 		}
 
 	}
-	
-	
-	public void clearPossibilities(){
-		
+
+
+	public static void clearPossibilities(){
+
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
-				
+
 				numbers[x][y].empty();
-				
+
 			}	
 		}
-		
+
 	}
-	
-	public void upDate(){
-		
-		placePossibilities();
+
+	public static void update(){
+
 		clearPossibilities();
-		
+		placePossibilities();
+
 	}
+
+	public static void onlyPossibility(){
+
+		for(int n=1; n<10; n++){ //number to place
+
+			for(int g=0; g<3; g++){ //grid number
+
+				for(int y=g*3; y<((g*3)+3); y++){
+
+					int count =0;
+					int temp = 0;
+					
+					for(int x=g*3; x<((g*3)+3); x++){
+
+						if(board[x][y].getValue() == n){
+							count++;
+							temp = x;
+
+
+						}
+						if(count == 1)
+							board[temp][y].setValue(n);
+					}
+				}
+			}
+		}
+	}
+
+	public static void onlyPossibleNumber(){
+
+		for(int y=0; y<9; y++){
+			for(int x=0; x<9; x++){
+				NumberList.Node cursor = numbers[x][y].getHead();
+				if(numbers[x][y]!=null && cursor.getNext()==null){
+
+					board[x][y].setFinished(true);
+					board[x][y].setValue(cursor.getNumber());
+
+
+				}
+			}
+
+		}
+
+	}
+
+
+
+	public static void determine(){
+
+		onlyPossibility();
+		onlyPossibleNumber();
+		update();
+	}
+
+	public static boolean finishedSolving(){
+
+		boolean done = true;
+
+		for(int y=0; y<9; y++){
+			for(int x=0; x<9; x++){
+
+				if(board[x][y].getFinished()==false){
+					done = false;
+					break;
+				}
+				if(done == false)
+					break;
+			}
+
+		}
+		return done;
+	}
+
+
+
 
 }
 

@@ -2,15 +2,16 @@
 public class Possibilities {
 
 	boolean finished;
-	int gridNumber, row, colum, value;
+	int gridX, gridY, row, colum, value;
 
 
 
-	public Possibilities(boolean finished, int gridNumber, 
+	public Possibilities(boolean finished, int gridX, int gridY, 
 			int row, int colum, int value){
 
 		this.finished = finished; 
-		this.gridNumber = gridNumber;
+		this.gridX = gridX;
+		this.gridY = gridY;
 		this.row = row;
 		this.colum = colum;
 		this.value = value;
@@ -29,15 +30,27 @@ public class Possibilities {
 
 	}
 
-	public void setGridNumber(int gridNumber){
+	public void setGridX(int gridX){
 
-		this.gridNumber = gridNumber;
+		this.gridX = gridX;
 
 	}
+	
+	public int getGridX(){
+		
+		return gridX;
+	}
+	
 
-	public int getGridNumber(){
+	public void setGridY(int gridY){
 
-		return gridNumber;
+		this.gridY = gridY;
+
+	}
+	
+	public int getGridY(){
+		
+		return gridY;
 	}
 
 	public void setRow(int row){

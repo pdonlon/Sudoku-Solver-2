@@ -4,7 +4,7 @@ public class NumberList {
 	int number;
 	Node head;
 	Node tail;
-
+	
 	public void add(int number){
 
 		Node entering = new Node(number);
@@ -23,9 +23,18 @@ public class NumberList {
 		head = null;
 
 	}
+	
+	public Node getHead(){
+		
+		return head;
+	}
 
+	public int getNumber(){
+		
+		return number;
+	}
 
-	public class Node{
+	public static class Node{
 
 		int number;
 		Node next;
@@ -33,15 +42,22 @@ public class NumberList {
 		public Node(int number){
 
 			number = this.number;
-
 		}
 
 		public void setNext(Node next){
 
 			next = this.next;
-
 		}
 
+		public Node getNext(){
+			
+			return next;
+		}
+		
+		public int getNumber(){
+			
+			return number;
+		}
 	}
 }
 

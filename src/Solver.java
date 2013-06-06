@@ -21,6 +21,8 @@ public class Solver {
 				board[x][y] = new Possibilities(false,0,0,x+1,y+1,0);	
 				board[x][y].setGridX(findGridX(x));
 				board[x][y].setGridY(findGridY(y));
+				
+				numbers[x][y] = new NumberList();
 
 			}
 		}
@@ -84,14 +86,14 @@ public class Solver {
 
 	public static int findGridX(int x){
 
-		int gridX = (x-1)/3;
+		int gridX = x/3;
 
 		return gridX;
 	}
 
 	public static int findGridY(int y){
 
-		int gridY = (y-1)/3;
+		int gridY = y/3;
 
 		return gridY;
 	}
@@ -147,12 +149,10 @@ public class Solver {
 
 					if(board[x][y].getFinished() == false && 
 							sameCollumOrRow(n,x,y) == false 
-							&& sameGrid(n,x,y) == false)
+							&& sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false)
 
 						numbers[x][y].add(n);
-
-
-
+					
 				}
 			}
 		}
@@ -189,7 +189,7 @@ public class Solver {
 
 					int count =0;
 					int temp = 0;
-					
+
 					for(int x=g*3; x<((g*3)+3); x++){
 
 						if(board[x][y].getValue() == n){
@@ -198,8 +198,10 @@ public class Solver {
 
 
 						}
-						if(count == 1)
+						if(count == 1){
 							board[temp][y].setValue(n);
+							board[temp][y].setFinished(true);
+						}
 					}
 				}
 			}
@@ -210,19 +212,21 @@ public class Solver {
 
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
-				NumberList.Node cursor = numbers[x][y].getHead();
-				if(numbers[x][y]!=null && cursor.getNext()==null){
 
-					board[x][y].setFinished(true);
-					board[x][y].setValue(cursor.getNumber());
+					NumberList.Node cursor = numbers[x][y].getHead();
 
+					if(cursor!=null && cursor.getNext()==null){
 
+						board[x][y].setFinished(true);
+						board[x][y].setValue(cursor.getNumber());
+
+					}
 				}
 			}
 
 		}
 
-	}
+	
 
 
 
@@ -230,7 +234,9 @@ public class Solver {
 
 		onlyPossibility();
 		onlyPossibleNumber();
+		drawBoard();
 		update();
+	
 	}
 
 	public static boolean finishedSolving(){

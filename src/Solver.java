@@ -2,14 +2,48 @@ import java.util.Scanner;
 
 public class Solver {
 
-	static Possibilities[][]board = new Possibilities[9][9];
-	static NumberList[][] numbers = new NumberList[9][9];
+	static Cell[][]board = new Cell[9][9];
+	static Possibilities[][] numbers = new Possibilities[9][9];
+
+	static int[][]tester = {
+		{0,0,0, 5,0,0, 0,0,0,},
+		{0,0,0, 9,0,3, 0,2,0,},
+		{0,5,0, 0,0,4, 6,0,0,},
+
+		{0,9,6, 0,0,0, 2,1,0,},
+		{1,7,0, 0,9,8, 0,0,0,},
+		{0,4,0, 0,1,0, 3,0,9,},
+
+		{0,1,0, 0,0,0, 7,0,4,},
+		{0,2,0, 7,0,0, 0,5,3,},
+		{0,8,4, 0,5,6, 0,0,0,}
+	};
 
 	public static void main(String[] args) {	
 
 		initializePoints();
-		while(finishedSolving() != true)
+		drawBoard();
+		while(finishedSolving() != true){
 			determine();
+		}
+
+		//		String number = "";
+		//		
+		//		for(int y=0; y<9; y++){
+		//			for(int x=0; x<9; x++){
+		//				
+		//				numbers[x][y] = new NumberList();
+		//				numbers[x][y].add(1);
+		//				NumberList.Node cursor = numbers[x][y].getHead();
+		//				number = cursor.getNumber() + " ";
+		//
+		//			}
+		//		}
+
+		//		System.out.print(number);
+
+
+
 	}
 
 
@@ -18,41 +52,45 @@ public class Solver {
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-				board[x][y] = new Possibilities(false,0,0,x+1,y+1,0);	
+				board[x][y] = new Cell(false,0,0,x+1,y+1,0);	
 				board[x][y].setGridX(findGridX(x));
 				board[x][y].setGridY(findGridY(y));
-				
-				numbers[x][y] = new NumberList();
+				if(tester[x][y] != 0)
+					board[x][y].setValue(tester[x][y]);
+				else
+					numbers[x][y] = new Possibilities();
 
 			}
 		}
 
-		Scanner scan = new Scanner(System.in);
 
-		while(true){
 
-			System.out.println("please insert an x coordinate");
-
-			int xCord = scan.nextInt();
-
-			System.out.println("please insert an y coordinate");
-
-			int yCord = scan.nextInt();
-
-			System.out.println("please insert a number to insert");
-
-			int number = scan.nextInt();
-
-			if(xCord == 0 || yCord == 0 || number == 0){
-
-				break;
-			}
-
-			board[xCord-1][yCord-1].setValue(number);
-			board[xCord-1][yCord-1].setFinished(true);
-			drawBoard();
-
-		}
+		//		Scanner scan = new Scanner(System.in);
+		//
+		//		while(true){
+		//
+		//			System.out.println("please insert an x coordinate");
+		//
+		//			int xCord = scan.nextInt();
+		//
+		//			System.out.println("please insert an y coordinate");
+		//
+		//			int yCord = scan.nextInt();
+		//
+		//			System.out.println("please insert a number to insert");
+		//
+		//			int number = scan.nextInt();
+		//
+		//			if(xCord == 0 || yCord == 0 || number == 0){
+		//
+		//				break;
+		//			}
+		//
+		//			board[xCord-1][yCord-1].setValue(number);
+		//			board[xCord-1][yCord-1].setFinished(true);
+		//			drawBoard();
+		//
+		//		}
 	}
 
 	public static void drawBoard(){
@@ -61,11 +99,11 @@ public class Solver {
 		for(int x=0; x<9; x++){
 
 			String output = "";
-			int collumCount = 0;
+			int columnCount = 0;
 			for(int y=0; y<9; y++){
 
-				collumCount++;
-				if(collumCount==3||collumCount==6)
+				columnCount++;
+				if(columnCount==3||columnCount==6)
 					output = output+board[x][y].getValue()+" "+"| ";
 				else
 					output = output+board[x][y].getValue()+" ";
@@ -148,11 +186,12 @@ public class Solver {
 				for(int x=0; x<9; x++){
 
 					if(board[x][y].getFinished() == false && 
-							sameCollumOrRow(n,x,y) == false 
-							&& sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false)
+							sameCollumOrRow(n,x,y) == false &&
+							sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false){
 
+						numbers[x][y] = new Possibilities();
 						numbers[x][y].add(n);
-					
+					}
 				}
 			}
 		}
@@ -165,7 +204,7 @@ public class Solver {
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-				numbers[x][y].empty();
+				numbers[x][y] = null;
 
 			}	
 		}
@@ -179,64 +218,75 @@ public class Solver {
 
 	}
 
+	 
 	public static void onlyPossibility(){
-
-		for(int n=1; n<10; n++){ //number to place
-
-			for(int g=0; g<3; g++){ //grid number
-
-				for(int y=g*3; y<((g*3)+3); y++){
-
-					int count =0;
-					int temp = 0;
-
-					for(int x=g*3; x<((g*3)+3); x++){
-
-						if(board[x][y].getValue() == n){
-							count++;
-							temp = x;
-
-
-						}
-						if(count == 1){
-							board[temp][y].setValue(n);
-							board[temp][y].setFinished(true);
-						}
-					}
-				}
-			}
-		}
+	    
+	    for(int n=1; n<10; n++){ //number to place
+	        
+	        for(int g=0; g<3; g++){ //grid number
+	            
+	            for(int y=g*3; y<((g*3)+3); y++){
+	                
+	                int count =0;
+	                int temp = 0;
+	                
+	                for(int x=g*3; x<((g*3)+3); x++){
+	                    
+	                    if (!board[x][y].getFinished())
+	                    {
+	                        Possibilities.Node curr = numbers[x][y].getHead();
+	                        
+	                        // go through all possibilities at position
+	                        while (curr != null)
+	                        {
+	                            if(curr.getNumber() == n){
+	                                count++;
+	                                temp = x;
+	                            }
+	                            curr = curr.getNext();
+	                        }
+	                    }
+	                }
+	                if(count == 1){
+	                    board[temp][y].setValue(n);
+	                    board[temp][y].setFinished(true);
+	                    drawBoard();
+	                }
+	            }
+	        }
+	    }
 	}
-
 	public static void onlyPossibleNumber(){
-
+		//Has bug
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-					NumberList.Node cursor = numbers[x][y].getHead();
+				if(board[x][y].getFinished()==false && numbers[x][y].getHead()!=null){
+					
+					Possibilities.Node cursor = numbers[x][y].getHead();
 
-					if(cursor!=null && cursor.getNext()==null){
+					if(cursor!=null && cursor.getNext()==null){ 
 
 						board[x][y].setFinished(true);
 						board[x][y].setValue(cursor.getNumber());
-
+						drawBoard();
 					}
 				}
 			}
-
 		}
 
-	
+	}
+
+
 
 
 
 	public static void determine(){
 
-		onlyPossibility();
-		onlyPossibleNumber();
-		drawBoard();
 		update();
-	
+		onlyPossibility();
+		//onlyPossibleNumber(); 
+
 	}
 
 	public static boolean finishedSolving(){

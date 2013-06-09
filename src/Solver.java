@@ -5,62 +5,47 @@ public class Solver {
 	static Cell[][]board = new Cell[9][9];
 	static Possibilities[][] numbers = new Possibilities[9][9];
 
-//	static int[][]tester = {
-//		{0,0,0, 5,0,0, 0,0,0,},
-//		{0,0,0, 9,0,3, 0,2,0,},
-//		{0,5,0, 0,0,4, 6,0,0,},
-//
-//		{0,9,6, 0,0,0, 2,1,0,},
-//		{1,7,0, 0,9,8, 0,0,0,},
-//		{0,4,0, 0,1,0, 3,0,9,},
-//
-//		{0,1,0, 0,0,0, 7,0,4,},
-//		{0,2,0, 7,0,0, 0,5,3,},
-//		{0,8,4, 0,5,6, 0,0,0,}
-//	};
-	
-	static int[][]tester = {  //all 5s filled in
+	static int[][]tester = {
 		{0,0,0, 5,0,0, 0,0,0,},
-		{0,0,0, 9,0,3, 0,2,5,},
+		{0,0,0, 9,0,3, 0,2,0,},
 		{0,5,0, 0,0,4, 6,0,0,},
 
-		{5,9,6, 0,0,0, 2,1,0,},
-		{1,7,0, 0,9,8, 5,0,0,},
-		{0,4,0, 0,1,5, 3,0,9,},
+		{0,9,6, 0,0,0, 2,1,0,},
+		{1,7,0, 0,9,8, 0,0,0,},
+		{0,4,0, 0,1,0, 3,0,9,},
 
-		{0,1,5, 0,0,0, 7,0,4,},
+		{0,1,0, 0,0,0, 7,0,4,},
 		{0,2,0, 7,0,0, 0,5,3,},
 		{0,8,4, 0,5,6, 0,0,0,}
 	};
+	
+//	static int[][]tester = {  //all 5s filled in
+//		{0,0,0, 5,0,0, 0,0,0,},
+//		{0,0,0, 9,0,3, 0,2,5,},
+//		{0,5,0, 0,0,4, 6,0,0,},
+//
+//		{5,9,6, 0,0,0, 2,1,0,},
+//		{1,7,0, 0,9,8, 5,0,0,},
+//		{0,4,0, 0,1,5, 3,0,9,},
+//
+//		{0,1,5, 0,0,0, 7,0,4,},
+//		{0,2,0, 7,0,0, 0,5,3,},
+//		{0,8,4, 0,5,6, 0,0,0,}
+//	};
 
 	public static void main(String[] args) {	
 
 		initializePoints();
 		drawBoard();
 		placePossibilities();
-
-		for(int y=0; y<9; y++){
-			for(int x=0; x<9; x++){
-				System.out.println(numbers[x][y]);
-			}
-		}
-
-		//		String number = "";
-		//		
-		//		for(int y=0; y<9; y++){
-		//			for(int x=0; x<9; x++){
-		//				
-		//				numbers[x][y] = new NumberList();
-		//				numbers[x][y].add(1);
-		//				NumberList.Node cursor = numbers[x][y].getHead();
-		//				number = cursor.getNumber() + " ";
-		//
-		//			}
-		//		}
-
-		//		System.out.print(number);
-
-
+		while(finishedSolving()!= true)
+			determine();
+		
+//		for(int y=0; y<9; y++){		//testing things
+//			for(int x=0; x<9; x++){
+//				System.out.println(numbers[x][y]);
+//			}
+//		}
 
 	}
 
@@ -73,8 +58,10 @@ public class Solver {
 				board[x][y] = new Cell(false,0,0,x+1,y+1,0);	
 				board[x][y].setGridX(findGridX(x));
 				board[x][y].setGridY(findGridY(y));
-				if(tester[x][y] != 0)
+				if(tester[x][y] != 0){
 					board[x][y].setValue(tester[x][y]);
+					board[x][y].setFinished(true);
+				}
 				else
 					numbers[x][y] = new Possibilities();
 
@@ -203,23 +190,23 @@ public class Solver {
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-//				if(board[x][y].getFinished() == false)
-//				{
+				if(board[x][y].getFinished() == false)
+				{
 					numbers[x][y] = new Possibilities();
 
 					for(int n=1; n<10; n++){
 
 						
-//						if(sameCollumOrRow(n,x,y) == false
-//						&&sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false){
+						if(sameCollumOrRow(n,x,y) == false
+						&&sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false){
 
 							numbers[x][y].add(n);
 						}
 					}
 				}
 			}
-//		}
-//	}
+		}
+	}
 
 	public static void clearPossibilities(){
 
@@ -279,7 +266,7 @@ public class Solver {
 		}
 	}
 	public static void onlyPossibleNumber(){
-		//Has bug
+		
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
@@ -306,7 +293,8 @@ public class Solver {
 	public static void determine(){
 
 		update();
-		onlyPossibility();
+//		onlyPossibility();
+//		update();
 		onlyPossibleNumber(); 
 
 	}

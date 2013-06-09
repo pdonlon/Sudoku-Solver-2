@@ -61,12 +61,12 @@ public class Possibilities {
 
 		public Node(int number){
 
-			number = this.number;
+			this.number = number;
 		}
 
 		public void setNext(Node next){
 
-			next = this.next;
+			this.next = next;
 		}
 
 		public Node getNext(){

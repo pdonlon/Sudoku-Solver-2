@@ -3,11 +3,11 @@ public class Possibilities {
 
 	Node head;
 	Node tail;
-	
+
 	public Possibilities(){
-		
+
 	}
-	
+
 	public void add(int number){
 
 		Node entering = new Node(number);
@@ -22,22 +22,36 @@ public class Possibilities {
 	}
 
 	public int deque(){
-		
+
 		int value = head.getNumber();
 		head = head.getNext();
-		
+
 		return value;
 	}
-	
+
 	public Node getHead(){
-		
+
 		return head;
 	}
-	
+
 	public void empty(){
 
 		head = null;
 
+	}
+
+	public String toString()
+	{
+		String s = "";
+
+		Node ptr = head;
+		while (ptr != null)
+		{
+			s += ptr.getNumber();
+			ptr = ptr.getNext();
+		}
+
+		return s;
 	}
 
 	public static class Node{
@@ -56,16 +70,16 @@ public class Possibilities {
 		}
 
 		public Node getNext(){
-			
+
 			return next;
 		}
-		
+
 		public int getNumber(){
-			
+
 			return number;
 		}
 	}
 }
 
-	
+
 

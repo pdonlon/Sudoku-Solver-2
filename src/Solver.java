@@ -5,16 +5,30 @@ public class Solver {
 	static Cell[][]board = new Cell[9][9];
 	static Possibilities[][] numbers = new Possibilities[9][9];
 
-	static int[][]tester = {
+//	static int[][]tester = {
+//		{0,0,0, 5,0,0, 0,0,0,},
+//		{0,0,0, 9,0,3, 0,2,0,},
+//		{0,5,0, 0,0,4, 6,0,0,},
+//
+//		{0,9,6, 0,0,0, 2,1,0,},
+//		{1,7,0, 0,9,8, 0,0,0,},
+//		{0,4,0, 0,1,0, 3,0,9,},
+//
+//		{0,1,0, 0,0,0, 7,0,4,},
+//		{0,2,0, 7,0,0, 0,5,3,},
+//		{0,8,4, 0,5,6, 0,0,0,}
+//	};
+	
+	static int[][]tester = {  //all 5s filled in
 		{0,0,0, 5,0,0, 0,0,0,},
-		{0,0,0, 9,0,3, 0,2,0,},
+		{0,0,0, 9,0,3, 0,2,5,},
 		{0,5,0, 0,0,4, 6,0,0,},
 
-		{0,9,6, 0,0,0, 2,1,0,},
-		{1,7,0, 0,9,8, 0,0,0,},
-		{0,4,0, 0,1,0, 3,0,9,},
+		{5,9,6, 0,0,0, 2,1,0,},
+		{1,7,0, 0,9,8, 5,0,0,},
+		{0,4,0, 0,1,5, 3,0,9,},
 
-		{0,1,0, 0,0,0, 7,0,4,},
+		{0,1,5, 0,0,0, 7,0,4,},
 		{0,2,0, 7,0,0, 0,5,3,},
 		{0,8,4, 0,5,6, 0,0,0,}
 	};
@@ -23,8 +37,12 @@ public class Solver {
 
 		initializePoints();
 		drawBoard();
-		while(finishedSolving() != true){
-			determine();
+		placePossibilities();
+
+		for(int y=0; y<9; y++){
+			for(int x=0; x<9; x++){
+				System.out.println(numbers[x][y]);
+			}
 		}
 
 		//		String number = "";
@@ -122,6 +140,7 @@ public class Solver {
 
 	}
 
+
 	public static int findGridX(int x){
 
 		int gridX = x/3;
@@ -181,23 +200,26 @@ public class Solver {
 
 	public static void placePossibilities(){
 
-		for(int n=1; n<10; n++){
-			for(int y=0; y<9; y++){
-				for(int x=0; x<9; x++){
+		for(int y=0; y<9; y++){
+			for(int x=0; x<9; x++){
 
-					if(board[x][y].getFinished() == false && 
-							sameCollumOrRow(n,x,y) == false &&
-							sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false){
+//				if(board[x][y].getFinished() == false)
+//				{
+					numbers[x][y] = new Possibilities();
 
-						numbers[x][y] = new Possibilities();
-						numbers[x][y].add(n);
+					for(int n=1; n<10; n++){
+
+						
+//						if(sameCollumOrRow(n,x,y) == false
+//						&&sameGrid(n,board[x][y].getGridX(),board[x][y].getGridY()) == false){
+
+							numbers[x][y].add(n);
+						}
 					}
 				}
 			}
-		}
-
-	}
-
+//		}
+//	}
 
 	public static void clearPossibilities(){
 
@@ -218,51 +240,51 @@ public class Solver {
 
 	}
 
-	 
+
 	public static void onlyPossibility(){
-	    
-	    for(int n=1; n<10; n++){ //number to place
-	        
-	        for(int g=0; g<3; g++){ //grid number
-	            
-	            for(int y=g*3; y<((g*3)+3); y++){
-	                
-	                int count =0;
-	                int temp = 0;
-	                
-	                for(int x=g*3; x<((g*3)+3); x++){
-	                    
-	                    if (!board[x][y].getFinished())
-	                    {
-	                        Possibilities.Node curr = numbers[x][y].getHead();
-	                        
-	                        // go through all possibilities at position
-	                        while (curr != null)
-	                        {
-	                            if(curr.getNumber() == n){
-	                                count++;
-	                                temp = x;
-	                            }
-	                            curr = curr.getNext();
-	                        }
-	                    }
-	                }
-	                if(count == 1){
-	                    board[temp][y].setValue(n);
-	                    board[temp][y].setFinished(true);
-	                    drawBoard();
-	                }
-	            }
-	        }
-	    }
+
+		for(int n=1; n<10; n++){ //number to place
+
+			for(int g=0; g<3; g++){ //grid number
+
+				for(int y=g*3; y<((g*3)+3); y++){
+
+					int count =0;
+					int temp = 0;
+
+					for(int x=g*3; x<((g*3)+3); x++){
+
+						if (!board[x][y].getFinished())
+						{
+							Possibilities.Node curr = numbers[x][y].getHead();
+
+							// go through all possibilities at position
+							while (curr != null)
+							{
+								if(curr.getNumber() == n){
+									count++;
+									temp = x;
+								}
+								curr = curr.getNext();
+							}
+						}
+					}
+					if(count == 1){
+						board[temp][y].setValue(n);
+						board[temp][y].setFinished(true);
+						drawBoard();
+					}
+				}
+			}
+		}
 	}
 	public static void onlyPossibleNumber(){
 		//Has bug
 		for(int y=0; y<9; y++){
 			for(int x=0; x<9; x++){
 
-				if(board[x][y].getFinished()==false && numbers[x][y].getHead()!=null){
-					
+				if(board[x][y].getFinished()==false){
+
 					Possibilities.Node cursor = numbers[x][y].getHead();
 
 					if(cursor!=null && cursor.getNext()==null){ 
@@ -285,7 +307,7 @@ public class Solver {
 
 		update();
 		onlyPossibility();
-		//onlyPossibleNumber(); 
+		onlyPossibleNumber(); 
 
 	}
 
